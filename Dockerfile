@@ -18,9 +18,8 @@ RUN wget https://download.oracle.com/java/17/archive/jdk-${JAVA_VERSION}_linux-x
     rm -f /tmp/jdk.tar.gz
 
 # 安装 Maven（官方归档）
-ENV MAVEN_VERSION=3.8.8
 ENV MAVEN_HOME=/opt/maven
-RUN wget https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz -O /tmp/maven.tar.gz && \
+RUN wget https://downloads.apache.org/maven/maven-3/3.9.10/binaries/apache-maven-3.9.10-bin.tar.gz -O /tmp/maven.tar.gz && \
     mkdir -p $MAVEN_HOME && \
     tar -zxf /tmp/maven.tar.gz -C $MAVEN_HOME --strip-components=1 && \
     ln -s $MAVEN_HOME/bin/mvn /usr/bin/mvn && \
@@ -28,8 +27,6 @@ RUN wget https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache
 
 # 设置环境变量
 ENV PATH=$JAVA_HOME/bin:$MAVEN_HOME/bin:$PATH
-ENV TZ=Asia/Shanghai
-ENV LANG=en_US.utf8
 
 # 可选：验证
 RUN java -version && mvn -version && git --version && unzip -v
