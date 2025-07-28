@@ -38,8 +38,8 @@ FROM openjdk:17-jdk-slim
 
 ENV ANDROID_SDK_ROOT=/opt/android-sdk \
     ANDROID_HOME=/opt/android-sdk \
-    GRADLE_HOME=/opt/gradle-8.4 \
-    PATH=$PATH:/opt/android-sdk/cmdline-tools/latest/bin:/opt/android-sdk/platform-tools:/opt/android-sdk/emulator:/opt/gradle-8.4/bin
+    GRADLE_HOME=/opt/gradle-8.9 \
+    PATH=$PATH:/opt/android-sdk/cmdline-tools/latest/bin:/opt/android-sdk/platform-tools:/opt/android-sdk/emulator:/opt/gradle-8.9/bin
 
 # 安装运行时依赖
 RUN apt-get update && \
@@ -66,10 +66,10 @@ RUN curl -s "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscl
     rm -rf awscliv2.zip aws
 
 # 安装 Gradle
-RUN wget -q https://services.gradle.org/distributions/gradle-8.4-bin.zip -P /tmp && \
-    unzip -q /tmp/gradle-8.4-bin.zip -d /opt && \
-    ln -s /opt/gradle-8.4/bin/gradle /usr/bin/gradle && \
-    rm /tmp/gradle-8.4-bin.zip
+RUN wget -q https://services.gradle.org/distributions/gradle-8.9-bin.zip -P /tmp && \
+    unzip -q /tmp/gradle-8.9-bin.zip -d /opt && \
+    ln -s /opt/gradle-8.9/bin/gradle /usr/bin/gradle && \
+    rm /tmp/gradle-8.9-bin.zip
 
 # 清理不必要的文件
 RUN rm -rf /opt/android-sdk/ndk/26.1.10909125/docs \
