@@ -1,43 +1,18 @@
-FROM openjdk:17-jdk-slim
+FROM node:18.20.4
 
-LABEL maintainer="许军杰"
+# 安装 bash 和核心工具
+RUN apt-get update && apt-get install -y \
+    bash \
+    curl \
+    git \
+    && rm -rf /var/lib/apt/lists/*
 
-# 安装必要工具
-RUN apt-get update && \
-    apt-get install -y wget unzip git curl zip lsof python3 python3-pip && \
-    rm -rf /var/lib/apt/lists/*
+# 安装 pnpm (推荐方式)
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# 设置 Android SDK 环境变量
-ENV ANDROID_SDK_ROOT /opt/android-sdk
-ENV ANDROID_HOME /opt/android-sdk
-ENV PATH $PATH:/opt/android-sdk/cmdline-tools/latest/bin:/opt/android-sdk/platform-tools:/opt/android-sdk/emulator
+# 设置默认 shell 为 bash
+SHELL ["/bin/bash", "-c"]
 
-# 下载并安装 Android Commandline Tools
-RUN mkdir -p /opt/android-sdk/cmdline-tools && \
-    cd /opt/android-sdk/cmdline-tools && \
-    wget https://dl.google.com/android/repository/commandlinetools-linux-9123335_latest.zip -O tools.zip && \
-    unzip tools.zip && rm tools.zip && \
-    mkdir latest && \
-    mv cmdline-tools/* latest/ && \
-    rmdir cmdline-tools
-
-# 安装 Android SDK 组件
-RUN yes | sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --licenses && \
-    sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "platform-tools" "platforms;android-33" "build-tools;33.0.0" "build-tools;30.0.3" "ndk;26.1.10909125" "cmake;3.18.1"
-
-# 安装 Gradle 8.9
-RUN wget https://services.gradle.org/distributions/gradle-8.9-bin.zip -P /tmp && \
-    unzip /tmp/gradle-8.9-bin.zip -d /opt && \
-    ln -s /opt/gradle-8.9/bin/gradle /usr/bin/gradle && \
-    rm /tmp/gradle-8.9-bin.zip
-# 安装 AWS CLI
-RUN curl -s "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
-    unzip -q awscliv2.zip && \
-    ./aws/install && \
-    rm -rf awscliv2.zip aws
-    
-ENV PATH $PATH:/opt/gradle-8.9/bin
-
-WORKDIR /home
-
-CMD ["/bin/bash"]
+# 验证安装
+RUN bash -c "type source" && \
+    pnpm --version
