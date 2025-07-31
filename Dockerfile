@@ -1,20 +1,18 @@
-FROM centos:8
-# 替换为阿里云 yum 源
-RUN sed -i 's|^mirrorlist=|#mirrorlist=|g' /etc/yum.repos.d/CentOS-Base.repo && \
-    sed -i 's|^#baseurl=http://mirror.centos.org|baseurl=http://mirrors.aliyun.com|g' /etc/yum.repos.d/CentOS-Base.repo && \
-    sed -i 's|^mirrorlist=|#mirrorlist=|g' /etc/yum.repos.d/CentOS-*.repo && \
-    sed -i 's|^#baseurl=http://mirror.centos.org|baseurl=http://mirrors.aliyun.com|g' /etc/yum.repos.d/CentOS-*.repo
-# 安装基础工具
-RUN yum install -y curl xz tar && \
-    yum clean all
+FROM node:18.20
 
-# 下载并安装 Node.js 二进制包
-RUN curl -fsSL https://nodejs.org/dist/v18.20.4/node-v18.20.4-linux-x64.tar.xz | \
-    tar -xJf - -C /usr/local --strip-components=1
+# 1. 设置 pnpm 环境
+ENV PNPM_HOME=/usr/local/share/pnpm
+ENV PATH=$PATH:$PNPM_HOME
 
-# 安装 pnpm
+# 2. 通过 Corepack 安装（官方推荐）
 RUN corepack enable && \
-    corepack prepare pnpm@latest --activate
+    corepack prepare pnpm@8.15.7 --activate && \
+    pnpm config set store-dir /usr/local/share/.pnpm-store
 
-# 验证
-RUN node -v && pnpm -v
+# 3. 安全加固
+RUN chmod -R 755 $PNPM_HOME && \
+    chown -R node:node $PNPM_HOME
+
+# 4. 使用非 root 用户
+USER node
+WORKDIR /app
