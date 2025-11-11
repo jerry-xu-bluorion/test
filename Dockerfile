@@ -19,7 +19,7 @@ RUN set -ex && \
     # 检测包管理器并安装 Python3
     if command -v yum >/dev/null 2>&1; then \
         # RHEL/CentOS/Amazon Linux
-        yum install -y python3 python3-pip && \
+        yum install -y python3 python3-pip unzip && \
         yum clean all && \
         rm -rf /var/cache/yum; \
     elif command -v apt-get >/dev/null 2>&1; then \
@@ -28,7 +28,8 @@ RUN set -ex && \
         apt-get install -y --no-install-recommends \
             python3 \
             python3-pip \
-            python3-setuptools && \
+            python3-setuptools \
+            unzip && \
         apt-get clean && \
         rm -rf /var/lib/apt/lists/*; \
     elif command -v apk >/dev/null 2>&1; then \
