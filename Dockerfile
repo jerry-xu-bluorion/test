@@ -19,7 +19,7 @@ RUN set -ex && \
     # 检测包管理器并安装 Python3
     if command -v yum >/dev/null 2>&1; then \
         # RHEL/CentOS/Amazon Linux
-        yum install -y python3 python3-pip unzip && \
+        yum install -y python3 python3-pip unzip  openssh-clients && \
         yum clean all && \
         rm -rf /var/cache/yum; \
     elif command -v apt-get >/dev/null 2>&1; then \
@@ -29,6 +29,7 @@ RUN set -ex && \
             python3 \
             python3-pip \
             python3-setuptools \
+            openssh-clients \
             unzip && \
         apt-get clean && \
         rm -rf /var/lib/apt/lists/*; \
